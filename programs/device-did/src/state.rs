@@ -7,6 +7,10 @@ pub struct Admin {
     pub bump_seed: u8,
 }
 
+impl Admin {
+    pub const MAX_SIZE: usize = 0;
+}
+
 #[account]
 pub struct Global {
     pub reg_fee: u64,

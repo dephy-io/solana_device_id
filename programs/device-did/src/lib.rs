@@ -2,7 +2,10 @@ use anchor_lang::prelude::*;
 
 declare_id!("CSg5Pxq7eA7F3bGhXdzv6YBBqrrecLNmoKR4jkkpTHzZ");
 
+pub mod instructions;
 pub mod state;
+
+pub use instruction::*;
 
 #[program]
 pub mod device_did {
@@ -36,9 +39,6 @@ pub mod device_did {
         Ok(())
     }
 }
-
-#[derive(Accounts)]
-pub struct InitializeAdmin {}
 
 #[derive(Accounts)]
 pub struct InitializeGlobal {}
