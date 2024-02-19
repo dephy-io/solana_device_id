@@ -2,10 +2,13 @@ use anchor_lang::prelude::*;
 
 declare_id!("CSg5Pxq7eA7F3bGhXdzv6YBBqrrecLNmoKR4jkkpTHzZ");
 
+pub mod constants;
+pub mod error;
 pub mod instructions;
 pub mod state;
+pub mod utils;
 
-pub use instruction::*;
+pub use instructions::*;
 
 #[program]
 pub mod device_did {
@@ -39,21 +42,3 @@ pub mod device_did {
         Ok(())
     }
 }
-
-#[derive(Accounts)]
-pub struct InitializeGlobal {}
-
-#[derive(Accounts)]
-pub struct CreateVendor {}
-
-#[derive(Accounts)]
-pub struct CreateProductCollection {}
-
-#[derive(Accounts)]
-pub struct MintDeviceDid {}
-
-#[derive(Accounts)]
-pub struct CreateDevice {}
-
-#[derive(Accounts)]
-pub struct ActivateDevice {}

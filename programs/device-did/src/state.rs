@@ -1,14 +1,16 @@
 use anchor_lang::prelude::*;
 
+// In the future, this account can transfer to DAO
 #[account]
 pub struct Admin {
-    pub admin: Pubkey,
-
+    pub admin: Pubkey, // Administrator who can change global setting, accept vendor into our infrastructure.
+    pub authority: Pubkey, // Authority to change Admin account, top super account.
+    pub treasury: Pubkey, // Gather service fees from vendors
     pub bump_seed: u8,
 }
 
 impl Admin {
-    pub const MAX_SIZE: usize = 0;
+    pub const SIZE: usize = std::mem::size_of::<Admin>();
 }
 
 #[account]
