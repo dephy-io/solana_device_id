@@ -30,10 +30,15 @@ pub mod device_did {
         Ok(())
     }
 
+    // vendor 只能拿到设备的公钥
+    // 设备有生成钱包的功能
+    // 设备老化，质检
+    // 由 device 申请，user profile
     pub fn create_device(_ctx: Context<CreateDevice>) -> Result<()> {
         Ok(())
     }
 
+    // 只要传设备的公钥即可
     pub fn mint_device_did(_ctx: Context<MintDeviceDid>) -> Result<()> {
         Ok(())
     }

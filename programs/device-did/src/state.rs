@@ -50,7 +50,7 @@ pub struct Device {
 pub struct Did {
     pub name: String,
     pub mint_at: u32,
-    pub seriers_num: String,
+    pub serial_num: String,
     pub owner: Pubkey,
 }
 
