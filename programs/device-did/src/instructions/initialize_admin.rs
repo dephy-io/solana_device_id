@@ -1,6 +1,7 @@
 use crate::state::*;
 use anchor_lang::prelude::*;
 
+#[derive(AnchorDeserialize, AnchorSerialize, Clone)]
 pub struct InitializeAdminArgs {
     pub admin: Pubkey,
     pub authority: Pubkey,
@@ -11,7 +12,6 @@ pub struct InitializeAdminArgs {
 pub struct InitializeAdmin<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-
     #[account(
         init,
         payer = payer,
@@ -20,16 +20,17 @@ pub struct InitializeAdmin<'info> {
         bump,
     )]
     pub admin: Account<'info, Admin>,
-
     pub system_program: Program<'info, System>,
 }
 
-pub fn handler(ctx: Context<InitializeAdmin>, args: InitializeAdminArgs) -> Result<()> {
-    ctx.accounts.admin.set_inner(Admin {
-        admin: args.admin,
-        authority: args.authority,
-        treasury: args.treasury,
-        bump_seed: ctx.bumps["admin"],
-    });
-    Ok(())
+impl<'info> InitializeAdmin<'info> {
+    pub fn handler(ctx: Context<InitializeAdmin>, args: InitializeAdminArgs) -> Result<()> {
+        ctx.accounts.admin.set_inner(Admin {
+            admin: args.admin,
+            authority: args.authority,
+            treasury: args.treasury,
+            bump_seed: ctx.bumps.admin,
+        });
+        Ok(())
+    }
 }

@@ -14,27 +14,28 @@ pub use instructions::*;
 pub mod device_did {
     use super::*;
 
-    pub fn initialize_admin(_ctx: Context<InitializeAdmin>) -> Result<()> {
-        Ok(())
+    // Administrator: Start
+    pub fn initialize_admin(
+        ctx: Context<InitializeAdmin>,
+        args: InitializeAdminArgs,
+    ) -> Result<()> {
+        initialize_admin::InitializeAdmin::handler(ctx, args)
     }
 
-    pub fn initialize_global(_ctx: Context<InitializeGlobal>) -> Result<()> {
-        Ok(())
+    pub fn initialize_global(
+        ctx: Context<InitializeGlobal>,
+        args: InitializeGlobalArgs,
+    ) -> Result<()> {
+        initialize_global::InitializeGlobal::handler(ctx, args)
     }
+    // Administrator: End
 
+    // Vendor: Start
     pub fn create_vendor(_ctx: Context<CreateVendor>) -> Result<()> {
         Ok(())
     }
 
     pub fn create_product_collection(_ctx: Context<CreateProductCollection>) -> Result<()> {
-        Ok(())
-    }
-
-    // vendor 只能拿到设备的公钥
-    // 设备有生成钱包的功能
-    // 设备老化，质检
-    // 由 device 申请，user profile
-    pub fn create_device(_ctx: Context<CreateDevice>) -> Result<()> {
         Ok(())
     }
 
@@ -46,4 +47,15 @@ pub mod device_did {
     pub fn activate_device(_ctx: Context<ActivateDevice>) -> Result<()> {
         Ok(())
     }
+    // Vendor: End
+
+    // Device: Start
+    // vendor 只能拿到设备的公钥
+    // 设备有生成钱包的功能
+    // 设备老化，质检
+    // 由 device 申请，user profile
+    pub fn create_device(_ctx: Context<CreateDevice>) -> Result<()> {
+        Ok(())
+    }
+    // Device: End
 }
