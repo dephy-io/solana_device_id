@@ -41,16 +41,28 @@ impl Vendor {
 
 #[account]
 pub struct Product {
-    pub name: String,
+    pub name: String,      // The name of the product collection.
+    pub devices_nums: u32, // The number of devices in the collection. Select u32 to contain enough devices.
     pub bump_seed: u8,
+}
+
+impl Product {
+    pub const SIZE: usize = 4 + 1;
 }
 
 #[account]
 pub struct Device {
-    pub holder: String,
-    pub device_state: DeviceState,
-    pub device_did_address: Pubkey,
-    pub bump_seed: u8,
+    // The address who hold and have the ownership of the device.
+    // The default holder is vendor address.
+    // When the device is activated, the holder field will change to the user address.
+    pub holder: Pubkey,
+    pub device_state: DeviceState, // The state of the device, default is Frozen.
+    pub device_did_address: Option<Pubkey>, // Specific did for the divice, default is None.
+}
+
+impl Device {
+    // DeviceState use 1 bytes
+    pub const SIZE: usize = 32 + 1 + 1 + 32 + 1;
 }
 
 // The DID subject is stored in cNFT structure.
