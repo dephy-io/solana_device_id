@@ -56,15 +56,16 @@ pub mod device_did {
     }
 
     // 只要传设备的公钥即可
-    pub fn mint_device_did(_ctx: Context<MintDeviceDid>) -> Result<()> {
-        Ok(())
+    // 当为一个设备 mint 一个 did 的时候，需要向指定账户转账一定金额的 SOL（在 global 中有配置数量）
+    pub fn mint_device_did(ctx: Context<MintDeviceDid>, args: MintDeviceDidArgs) -> Result<()> {
+        mint_device_did::MintDeviceDid::handler(ctx, args)
     }
     // Vendor: End
 
     // User: Start
     // 只需要有设备的签名就可以
-    pub fn activate_device(_ctx: Context<ActivateDevice>) -> Result<()> {
-        Ok(())
+    pub fn activate_device(ctx: Context<ActivateDevice>) -> Result<()> {
+        activate_device::ActivateDevice::handler(ctx)
     }
     // User: End
 }

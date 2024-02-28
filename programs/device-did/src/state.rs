@@ -65,12 +65,17 @@ impl Device {
     pub const SIZE: usize = 32 + 1 + 1 + 32 + 1;
 }
 
-// The DID subject is stored in cNFT structure.
+#[account]
 pub struct Did {
-    pub name: String,
-    pub mint_at: u32,
-    pub serial_num: String,
-    pub owner: Pubkey,
+    pub name: String,       // Specific name of the device.
+    pub serial_num: String, // The unique identity of the device.
+    pub mint_at: u32,       // Timestamp when the did has been minted. It is input by the vendor.
+    pub owner: Pubkey,      // The device who has ownership of the did.
+    pub bump_seed: u8,
+}
+
+impl Did {
+    pub const SIZE: usize = 8 + 32 + 1;
 }
 
 #[derive(Clone, AnchorDeserialize, AnchorSerialize)]
