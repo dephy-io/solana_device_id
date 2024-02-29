@@ -5,14 +5,14 @@ seeds = true
 skip-lint = false
 
 [programs.localnet]
-device_did = "CSg5Pxq7eA7F3bGhXdzv6YBBqrrecLNmoKR4jkkpTHzZ"
+device_did = "1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"
-wallet = "/home/xiaolong/.config/solana/id.json"
+wallet = "~/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
