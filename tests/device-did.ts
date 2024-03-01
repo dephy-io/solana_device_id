@@ -103,7 +103,6 @@ describe("device-did", () => {
 
   });
 
-
   it("Create ProductCollection", async () => {
     const vendor = anchor.web3.Keypair.generate();
     const vendor_pk = vendor.publicKey;
@@ -167,6 +166,25 @@ describe("device-did", () => {
       vendorAuthority: vendor_pk,
       acceptSol: accept_account_pk ,
       systemProgram: anchor.web3.SystemProgram.programId
+    }).rpc();
+
+  });
+
+  it("Activate Device", async () => {
+    const device = anchor.web3.Keypair.generate();
+    const device_pk = device.publicKey;
+
+    const vendor = anchor.web3.Keypair.generate();
+    const vendor_pk = vendor.publicKey;
+
+    const holder = anchor.web3.Keypair.generate();
+    const holder_pk = holder.publicKey;
+
+    const tx = await program.methods.activateDevice().accounts({
+      payer: signer.publicKey,
+      device: device_pk ,
+      vendorAuthority: vendor_pk,
+      newHolder: holder_pk,
     }).rpc();
 
   });
