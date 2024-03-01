@@ -1,6 +1,8 @@
 use crate::state::*;
 use anchor_lang::prelude::*;
 
+// 加解密，验证时间
+
 #[derive(Accounts)]
 pub struct CreateDevice<'info> {
     #[account(mut)]
@@ -29,6 +31,7 @@ pub struct CreateDevice<'info> {
 
 impl<'info> CreateDevice<'info> {
     pub fn handler(ctx: Context<CreateDevice>) -> Result<()> {
+        // let time = Clock::get();
         ctx.accounts.device.set_inner(Device {
             holder: ctx.accounts.vendor_authority.key(),
             device_state: DeviceState::Frozen,

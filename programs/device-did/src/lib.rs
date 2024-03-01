@@ -51,6 +51,7 @@ pub mod device_did {
     // 2. 创建设备信息是通过合约指令 create_device 写入到设备公钥对应地址的 data 中
     // 3. 设备根据这个指令打包好一个交易，并附上自己签名
     // 4. 将交易传递给 vendor，确认后需要附上 vendor 的签名，才能最终创建这个设备的信息
+    // 设备的签名不需要
     pub fn create_device(ctx: Context<CreateDevice>) -> Result<()> {
         create_device::CreateDevice::handler(ctx)
     }
