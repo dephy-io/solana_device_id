@@ -45,6 +45,7 @@ describe("device-did", () => {
     const tx = await program.methods.initializeAdmin(args)
       .accounts({
         payer: signer.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
       })
       .rpc();
   });
