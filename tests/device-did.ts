@@ -12,6 +12,7 @@ describe("device-did", () => {
 
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
+  const signer = provider.wallet;
 
   const program = anchor.workspace.DeviceDid as Program<DeviceDid>;
 
@@ -19,7 +20,6 @@ describe("device-did", () => {
   });
 
   it("Initialize Admin", async () => {
-    const signer = provider.wallet;
 
     const admin = anchor.web3.Keypair.generate();
     const admin_pk = admin.publicKey;
@@ -48,6 +48,96 @@ describe("device-did", () => {
         systemProgram: anchor.web3.SystemProgram.programId,
       })
       .rpc();
+  });
+
+  it("Initialize Global", async () => {
+
+    const authority = anchor.web3.Keypair.generate();
+    const authority_pk = authority.publicKey;
+
+    interface InitializeGlobalArgs {
+      regFee: number; // u64
+      bumpSeed: number;  // u8
+      authority: PublicKey;
+    }
+
+    let args: InitializeGlobalArgs = {
+      regFee: 5,
+      bumpSeed: 10,
+      authority: authority_pk,
+    }
+
+    const tx = await program.methods.initializeGlobal(args)
+      .accounts({
+        payer: signer.publicKey,
+        adminKey: signer.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .rpc();
+  });
+
+  it("Create Vendor", async () => {
+    const vendor = anchor.web3.Keypair.generate();
+    const vendor_pk = vendor.publicKey;
+
+    const service_authority = anchor.web3.Keypair.generate();
+    const service_authority_pk = service_authority.publicKey;
+
+    interface CreateVendorArgs {
+      name: string;
+      authority: PublicKey;
+    }
+
+    let args: CreateVendorArgs = {
+      name: "benewake",
+      authority: vendor_pk,
+    }
+
+    const tx = await program.methods.createVendor(args)
+    .accounts({
+      payer: signer.publicKey,
+      serviceAuthority: service_authority_pk,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .rpc();
+
+  });
+
+
+  it("Create ProductCollection", async () => {
+    const vendor = anchor.web3.Keypair.generate();
+    const vendor_pk = vendor.publicKey;
+
+    interface CreateProductCollectionArgs {
+      name: string;
+    }
+
+    let args: CreateProductCollectionArgs = {
+      name: "Smart Agriculture Project"
+    }
+
+    const tx = await program.methods.createProductCollection(args).accounts({
+      payer: signer.publicKey,
+      vendorAuthority: vendor_pk,
+      systemProgram: anchor.web3.SystemProgram.programId
+    }).rpc();
+
+  });
+
+  it("Create Device", async () => {
+    const vendor = anchor.web3.Keypair.generate();
+    const vendor_pk = vendor.publicKey;
+
+    const device = anchor.web3.Keypair.generate();
+    const device_pk = device.publicKey;
+
+    const tx = await program.methods.createDevice().accounts({
+      payer: signer.publicKey,
+      vendorAuthority: vendor_pk,
+      device: device_pk,
+      systemProgram: anchor.web3.SystemProgram.programId
+    }).rpc();
+
   });
 
 });
