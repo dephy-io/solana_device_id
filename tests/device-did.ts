@@ -140,4 +140,35 @@ describe("device-did", () => {
 
   });
 
+  it("Mint DeviceDid", async () => {
+
+    const vendor = anchor.web3.Keypair.generate();
+    const vendor_pk = vendor.publicKey;
+
+    const accept_account = anchor.web3.Keypair.generate();
+    const accept_account_pk = accept_account.publicKey;
+
+    interface MintDeviceDidArgs {
+      name: string;
+      serialNum: string;
+      mintAt: number; // u32
+    }
+
+    const currTime = Math.floor(Date.now() / 1000);
+
+    let args:MintDeviceDidArgs = {
+      name: "Mi Temperature and Humidity Monitor",
+      serialNum: "11034",
+      mintAt: currTime,
+    }
+
+    const tx = await program.methods.mintDeviceDid(args).accounts({
+      payer: signer.publicKey,
+      vendorAuthority: vendor_pk,
+      acceptSol: accept_account_pk ,
+      systemProgram: anchor.web3.SystemProgram.programId
+    }).rpc();
+
+  });
+
 });
