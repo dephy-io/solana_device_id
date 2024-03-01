@@ -2,21 +2,24 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { DeviceDid } from "../target/types/device_did";
+import { loadKeypair } from "./utils";
+import { BN } from "bn.js";
 
 // export ANCHOR_PROVIDER_URL="https://api.devnet.solana.com"
 // export ANCHOR_WALLET=~/.config/solana/id.json
 
 describe("device-did", () => {
   // Configure the client to use the local cluster.
-  const conn = new Connection("http://0.0.0.0:8899")
-
-  const provider = anchor.AnchorProvider.env();
+  const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
   anchor.setProvider(provider);
-  const signer = provider.wallet;
 
   const program = anchor.workspace.DeviceDid as Program<DeviceDid>;
+  const testKeypair = loadKeypair("./keypairs/test.json");
 
-  it.skip("Is initialized!", async () => {
+  let signer = provider;
+
+  before(async () => {
+
   });
 
   it("Initialize Admin", async () => {
@@ -93,16 +96,17 @@ describe("device-did", () => {
       authority: vendor_pk,
     }
 
+    // it("Is initialized!", async () => {
+    console.log("Test public key: ", testKeypair.publicKey.toString());
+
     const tx = await program.methods.createVendor(args)
-    .accounts({
-      payer: signer.publicKey,
-      serviceAuthority: service_authority_pk,
-      systemProgram: anchor.web3.SystemProgram.programId,
-    })
-    .rpc();
-
+      .accounts({
+        payer: signer.publicKey,
+        serviceAuthority: service_authority_pk,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .rpc();
   });
-
 
   it("Create ProductCollection", async () => {
     const vendor = anchor.web3.Keypair.generate();
@@ -156,7 +160,7 @@ describe("device-did", () => {
 
     const currTime = Math.floor(Date.now() / 1000);
 
-    let args:MintDeviceDidArgs = {
+    let args: MintDeviceDidArgs = {
       name: "Mi Temperature and Humidity Monitor",
       serialNum: "11034",
       mintAt: currTime,
@@ -165,7 +169,7 @@ describe("device-did", () => {
     const tx = await program.methods.mintDeviceDid(args).accounts({
       payer: signer.publicKey,
       vendorAuthority: vendor_pk,
-      acceptSol: accept_account_pk ,
+      acceptSol: accept_account_pk,
       systemProgram: anchor.web3.SystemProgram.programId
     }).rpc();
 
