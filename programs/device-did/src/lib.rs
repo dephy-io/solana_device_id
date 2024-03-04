@@ -1,4 +1,8 @@
 use anchor_lang::prelude::*;
+use solana_program::instruction::Instruction;
+use solana_program::sysvar::instructions::{load_instruction_at_checked, ID as IX_ID};
+
+pub mod tools;
 
 declare_id!("1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg");
 
@@ -69,4 +73,36 @@ pub mod device_did {
         activate_device::ActivateDevice::handler(ctx)
     }
     // User: End
+
+    pub fn verify_secp(
+        ctx: Context<Verify>,
+        eth_address: [u8; 20],
+        msg: Vec<u8>,
+        sig: [u8; 64],
+        recovery_id: u8,
+    ) -> Result<()> {
+        // Get what should be the Secp256k1Program instruction
+        let ix: Instruction = load_instruction_at_checked(0, &ctx.accounts.ix_sysvar)?;
+
+        // Check that ix is what we expect to have been sent
+        tools::verify_secp256k1_ix(&ix, &eth_address, &msg, &sig, recovery_id)?;
+
+        // Do other stuff
+
+        Ok(())
+    }
+
+}
+
+/// Context accounts
+#[derive(Accounts)]
+pub struct Verify<'info> {
+    pub sender: Signer<'info>,
+
+    /// CHECK: The address check is needed because otherwise
+    /// the supplied Sysvar could be anything else.
+    /// The Instruction Sysvar has not been implemented
+    /// in the Anchor framework yet, so this is the safe approach.
+    #[account(address = IX_ID)]
+    pub ix_sysvar: AccountInfo<'info>,
 }
