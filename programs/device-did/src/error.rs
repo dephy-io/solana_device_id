@@ -4,4 +4,7 @@ use anchor_lang::prelude::*;
 pub enum ErrorCode {
     #[msg("Invalid vendor key and ")]
     InvalidVendorKey,
+
+    #[msg("Signature verification failed.")]
+    SigVerificationFailed,
 }
