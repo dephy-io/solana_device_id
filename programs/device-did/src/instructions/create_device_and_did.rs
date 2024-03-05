@@ -5,26 +5,40 @@ use anchor_lang::{
     system_program::{transfer, Transfer},
 };
 
-#[derive(Clone, AnchorDeserialize, AnchorSerialize)]
-pub struct MintDeviceDidArgs {
+#[derive(AnchorDeserialize, AnchorSerialize, Clone)]
+pub struct CreateDeviceAndDidArgs {
     pub name: String,
     pub serial_num: String,
     pub mint_at: u32,
 }
 
 #[derive(Accounts)]
-#[instruction(args: MintDeviceDidArgs)]
-pub struct MintDeviceDid<'info> {
+#[instruction(args: CreateDeviceAndDidArgs)]
+pub struct CreateDeviceAndDid<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
+
+    #[account(
+        seeds = [b"vendor", vendor_authority.key().as_ref()],
+        bump = vendor.bump_seed,
+        constraint = vendor.authority == vendor_authority.key(),
+    )]
+    pub vendor: Account<'info, Vendor>,
+    pub vendor_authority: Signer<'info>,
+
     #[account(
         seeds = [b"product", product.name.as_bytes(), vendor_authority.key().as_ref()],
         bump = product.bump_seed,
     )]
     pub product: Account<'info, Product>,
-    pub vendor_authority: Signer<'info>,
-    #[account(mut, constraint = vendor_authority.key() == device.holder.key())]
+    #[account(
+        init,
+        payer = payer,
+        space = 8 + Device::SIZE,
+        signer,
+    )]
     pub device: Account<'info, Device>,
+
     #[account(
         init,
         payer = payer,
@@ -33,15 +47,23 @@ pub struct MintDeviceDid<'info> {
         bump,
     )]
     pub device_did: Account<'info, Did>,
+
     /// CHECK: The account accept the service from vendor.
     pub accept_sol: UncheckedAccount<'info>,
+    #[account(
+        seeds = [b"admin"],
+        bump = admin.bump_seed,
+        constraint = admin.treasury == accept_sol.key(),
+    )]
+    pub admin: Account<'info, Admin>,
     #[account(seeds = [b"global"], bump = global.bump_seed)]
     pub global: Account<'info, Global>,
+
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> MintDeviceDid<'info> {
-    pub fn handler(ctx: Context<MintDeviceDid>, args: MintDeviceDidArgs) -> Result<()> {
+impl<'info> CreateDeviceAndDid<'info> {
+    pub fn handler(ctx: Context<CreateDeviceAndDid>, args: CreateDeviceAndDidArgs) -> Result<()> {
         // Charge for service
         let sol_amount = (ctx.accounts.global.reg_fee)
             .checked_mul(LAMPORTS_PER_SOL)
@@ -64,8 +86,12 @@ impl<'info> MintDeviceDid<'info> {
             bump_seed: ctx.bumps.device_did,
         });
 
-        // Let the Did point to specific device
-        ctx.accounts.device.device_did_address = Some(ctx.accounts.device_did.key());
+        ctx.accounts.device.set_inner(Device {
+            holder: [0; 64],
+            device_state: DeviceState::Frozen,
+            device_did_address: Some(ctx.accounts.device_did.key()), // Let the Did point to specific device
+        });
+        ctx.accounts.product.devices_nums.checked_add(1).unwrap();
 
         Ok(())
     }

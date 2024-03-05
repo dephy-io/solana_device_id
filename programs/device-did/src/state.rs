@@ -55,14 +55,14 @@ pub struct Device {
     // The address who hold and have the ownership of the device.
     // The default holder is vendor address.
     // When the device is activated, the holder field will change to the user address.
-    pub holder: Pubkey,
-    pub device_state: DeviceState, // The state of the device, default is Frozen.
+    pub holder: [u8; 64],                   // Use secp256k1 public key.
+    pub device_state: DeviceState,          // The state of the device, default is Frozen.
     pub device_did_address: Option<Pubkey>, // Specific did for the divice, default is None.
 }
 
 impl Device {
     // DeviceState use 1 bytes
-    pub const SIZE: usize = 32 + 1 + 1 + 32 + 1;
+    pub const SIZE: usize = 64 + 1 + 1 + 32 + 1;
 }
 
 #[account]

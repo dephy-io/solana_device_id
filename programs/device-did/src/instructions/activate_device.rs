@@ -1,10 +1,15 @@
+use crate::error::ErrorCode;
 use crate::state::*;
+use crate::utils::secp256k1_recover_verify;
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program::sysvar::clock;
 
 #[derive(AnchorDeserialize, AnchorSerialize, Clone)]
 pub struct ActivateDeviceArgs {
-    pub user: Pubkey,
-    pub message: String,
+    pub public_key: [u8; 64],
+    pub message: Vec<u8>,
+    pub signature: [u8; 64],
+    pub recovery_id: u8,
 }
 
 // 拿到设备激活码
@@ -17,27 +22,31 @@ pub struct ActivateDeviceArgs {
 pub struct ActivateDevice<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-    #[account(
-        mut, 
-        constraint = vendor_authority.key() == device.holder.key(),
-        signer,
-    )]
+    #[account(mut)]
     pub device: Account<'info, Device>,
-    /// CHECK: The vendor authority account used to check device account.
-    /// CHECK: The default holder of device is vendor authority.
-    pub vendor_authority: UncheckedAccount<'info>,
-    /// CHECK: New holder of the device. Proxy is vendor authority. Not proxy is new user address.
-    pub new_holder: UncheckedAccount<'info>,
 }
 
-impl <'info> ActivateDevice<'info> {
-    pub fn handler(ctx: Context<ActivateDevice>) -> Result<()> {
-        // Proxy: do nothing. Proxy: change holder field of the device.
-        if ctx.accounts.new_holder.key() != ctx.accounts.vendor_authority.key() {
-            ctx.accounts.device.holder = ctx.accounts.new_holder.key();
-        }
+impl<'info> ActivateDevice<'info> {
+    pub fn handler(ctx: Context<ActivateDevice>, args: ActivateDeviceArgs) -> Result<()> {
+        // Verify secp256k1 signature
+        secp256k1_recover_verify(
+            &args.public_key,
+            &args.message,
+            &args.signature,
+            &args.recovery_id,
+        )?;
 
-        // 600 s 内
+        // the message need to be within half an hour, which 1800s
+        let clock_time = clock::Clock::get()?.unix_timestamp;
+        let bytes_message: &[u8] = &args.message;
+        let message_time = i64::from_be_bytes(bytes_message.try_into().unwrap());
+        require!(
+            clock_time - message_time <= 1800,
+            ErrorCode::InvalidValidationTime
+        );
+
+        // update device owner
+        ctx.accounts.device.holder = args.public_key;
 
         // Change the status of device
         ctx.accounts.device.device_state = DeviceState::Active;
