@@ -1,11 +1,10 @@
+use crate::error::ErrorCode;
 use crate::state::*;
 use anchor_lang::prelude::*;
 
 #[derive(AnchorDeserialize, AnchorSerialize, Clone)]
 pub struct InitializeGlobalArgs {
     pub reg_fee: u64,
-    pub authority: Pubkey,
-    pub bump_seed: u8,
 }
 
 #[derive(Accounts)]
@@ -17,7 +16,7 @@ pub struct InitializeGlobal<'info> {
         bump = admin.bump_seed
     )]
     pub admin: Account<'info, Admin>,
-    #[account(constraint = admin.authority == admin_key.key())]
+    #[account(constraint = admin.admin == admin_key.key() @ ErrorCode::InvalidAdmin)]
     pub admin_key: Signer<'info>,
     #[account(
         init,
@@ -34,7 +33,7 @@ impl<'info> InitializeGlobal<'info> {
     pub fn handler(ctx: Context<InitializeGlobal>, args: InitializeGlobalArgs) -> Result<()> {
         ctx.accounts.global.set_inner(Global {
             reg_fee: args.reg_fee,
-            authority: args.authority,
+            authority: ctx.accounts.admin_key.key(),
             bump_seed: ctx.bumps.global,
             allow_reg_addr: Vec::new(),
         });

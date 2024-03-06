@@ -15,7 +15,7 @@ pub struct CreateProductCollection<'info> {
     #[account(
         seeds = [b"vendor", vendor_authority.key().as_ref()],
         bump = vendor.bump_seed,
-        constraint = vendor.authority == vendor_authority.key()
+        constraint = vendor.authority == vendor_authority.key() @ ErrorCode::InvalidVendorKey,
     )]
     pub vendor: Account<'info, Vendor>,
     pub vendor_authority: Signer<'info>,
@@ -27,7 +27,7 @@ pub struct CreateProductCollection<'info> {
     #[account(
         init,
         payer = payer,
-        space = 8 + args.name.len() + Product::SIZE,
+        space = 8 + 4 + args.name.len() + Product::SIZE,
         seeds = [b"product", args.name.as_bytes(), vendor_authority.key().as_ref()],
         bump
     )]

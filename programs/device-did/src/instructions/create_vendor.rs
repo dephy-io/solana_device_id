@@ -16,14 +16,14 @@ pub struct CreateVendor<'info> {
         mut,
         seeds = [b"global"],
         bump = global.bump_seed,
-        constraint = global.authority == service_authority.key()
+        constraint = global.authority == admin_key.key()
     )]
     pub global: Account<'info, Global>,
-    pub service_authority: Signer<'info>,
+    pub admin_key: Signer<'info>,
     #[account(
         init,
         payer = payer,
-        space = 8 + args.name.len() + Vendor::SIZE,
+        space = 8 + 4 + args.name.len() + Vendor::SIZE,
         seeds = [b"vendor", args.authority.key().as_ref()],
         bump,
     )]

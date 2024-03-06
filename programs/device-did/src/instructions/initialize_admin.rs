@@ -1,3 +1,5 @@
+use crate::constants::*;
+use crate::error::ErrorCode;
 use crate::state::*;
 use anchor_lang::prelude::*;
 
@@ -25,6 +27,16 @@ pub struct InitializeAdmin<'info> {
 
 impl<'info> InitializeAdmin<'info> {
     pub fn handler(ctx: Context<InitializeAdmin>, args: InitializeAdminArgs) -> Result<()> {
+        require_keys_eq!(ADMIN, args.admin, ErrorCode::InvalidAdmin);
+
+        require_keys_eq!(
+            ADMIN_AUTHORITY,
+            args.authority,
+            ErrorCode::InvalidAdminAuthority
+        );
+
+        require_keys_eq!(TREASURY, args.treasury, ErrorCode::InvalidTreasury);
+
         ctx.accounts.admin.set_inner(Admin {
             admin: args.admin,
             authority: args.authority,
