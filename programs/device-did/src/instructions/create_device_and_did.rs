@@ -1,7 +1,7 @@
+use crate::error::ErrorCode;
 use crate::state::*;
 use anchor_lang::{
     prelude::*,
-    solana_program::native_token::LAMPORTS_PER_SOL,
     system_program::{transfer, Transfer},
 };
 
@@ -9,7 +9,7 @@ use anchor_lang::{
 pub struct CreateDeviceAndDidArgs {
     pub name: String,
     pub serial_num: String,
-    pub mint_at: u32,
+    pub mint_at: u64,
 }
 
 #[derive(Accounts)]
@@ -21,7 +21,7 @@ pub struct CreateDeviceAndDid<'info> {
     #[account(
         seeds = [b"vendor", vendor_authority.key().as_ref()],
         bump = vendor.bump_seed,
-        constraint = vendor.authority == vendor_authority.key(),
+        constraint = vendor.authority == vendor_authority.key() @ ErrorCode::InvalidVendorKey,
     )]
     pub vendor: Account<'info, Vendor>,
     pub vendor_authority: Signer<'info>,
@@ -35,7 +35,6 @@ pub struct CreateDeviceAndDid<'info> {
         init,
         payer = payer,
         space = 8 + Device::SIZE,
-        signer,
     )]
     pub device: Account<'info, Device>,
 
@@ -48,12 +47,13 @@ pub struct CreateDeviceAndDid<'info> {
     )]
     pub device_did: Account<'info, Did>,
 
-    /// CHECK: The account accept the service from vendor.
-    pub accept_sol: UncheckedAccount<'info>,
+    /// CHECK: The account accept the service fee from vendor.
+    #[account(mut)]
+    pub treasury: UncheckedAccount<'info>,
     #[account(
         seeds = [b"admin"],
         bump = admin.bump_seed,
-        constraint = admin.treasury == accept_sol.key(),
+        constraint = admin.treasury == treasury.key() @ ErrorCode::InvalidTreasury,
     )]
     pub admin: Account<'info, Admin>,
     #[account(seeds = [b"global"], bump = global.bump_seed)]
@@ -65,17 +65,14 @@ pub struct CreateDeviceAndDid<'info> {
 impl<'info> CreateDeviceAndDid<'info> {
     pub fn handler(ctx: Context<CreateDeviceAndDid>, args: CreateDeviceAndDidArgs) -> Result<()> {
         // Charge for service
-        let sol_amount = (ctx.accounts.global.reg_fee)
-            .checked_mul(LAMPORTS_PER_SOL)
-            .unwrap();
         let transfer_ctx = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
             Transfer {
                 from: ctx.accounts.payer.to_account_info(),
-                to: ctx.accounts.accept_sol.to_account_info(),
+                to: ctx.accounts.treasury.to_account_info(),
             },
         );
-        transfer(transfer_ctx, sol_amount)?;
+        transfer(transfer_ctx, ctx.accounts.global.reg_fee)?;
 
         // Update the information of Did
         ctx.accounts.device_did.set_inner(Did {

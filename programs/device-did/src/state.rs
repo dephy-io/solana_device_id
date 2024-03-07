@@ -69,7 +69,7 @@ impl Device {
 pub struct Did {
     pub name: String,       // Specific name of the device.
     pub serial_num: String, // The unique identity of the device.
-    pub mint_at: u32,       // Timestamp when the did has been minted. It is input by the vendor.
+    pub mint_at: u64,       // Timestamp when the did has been minted. It is input by the vendor.
     pub owner: Pubkey,      // The device who has ownership of the did.
     pub bump_seed: u8,
 }

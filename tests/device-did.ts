@@ -1,8 +1,10 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { DeviceDid } from "../target/types/device_did";
-import { loadKeypair } from "../utils/utils";
+import { loadKeypair, numberToUnit8Array } from "../utils/utils";
 import { BN } from "bn.js";
+import * as ethUtil from "@ethereumjs/util";
+import { keccak256 } from "ethereum-cryptography/keccak.js";
 
 // export ANCHOR_PROVIDER_URL="https://api.devnet.solana.com"
 // export ANCHOR_WALLET=~/.config/solana/id.json
@@ -17,6 +19,7 @@ describe("device-did", () => {
   const treasury = loadKeypair("./keypairs/treasury.json");
   const adminAuthority = loadKeypair("./keypairs/admin-authority.json");
   const vendorAuthority = loadKeypair("./keypairs/vendor-authority.json");
+  const device = loadKeypair("./keypairs/device.json");
   const vendorName = "IO Company";
   const productName = "Computer";
 
@@ -47,8 +50,17 @@ describe("device-did", () => {
     program.programId,
   )
 
-  before(async () => {
+  // PAD for device did
+  const [deviceDidPDA] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from("did"), device.publicKey.toBytes()],
+    program.programId,
+  )
 
+  before(async () => {
+    await provider.connection.requestAirdrop(
+      vendorAuthority.publicKey,
+      anchor.web3.LAMPORTS_PER_SOL * 5,
+    );
   });
 
   it("Initialize Admin", async () => {
@@ -83,91 +95,82 @@ describe("device-did", () => {
       authority: vendorAuthority.publicKey,
     })
       .accounts({
+        payer: vendorAuthority.publicKey,
         global: globalPDA,
         adminKey: adminKey.publicKey,
         vendor: vendorPDA,
       })
-      .signers([adminKey])
+      .signers([vendorAuthority, adminKey])
       .rpc();
   });
 
   it("Create ProductCollection", async () => {
     await program.methods.createProductCollection({
       name: productName,
-    }).accounts({
-      vendor: vendorPDA,
-      vendorAuthority: vendorAuthority.publicKey,
-      global: globalPDA,
-      product: productPDA,
     })
+      .accounts({
+        payer: vendorAuthority.publicKey,
+        vendor: vendorPDA,
+        vendorAuthority: vendorAuthority.publicKey,
+        global: globalPDA,
+        product: productPDA,
+      })
       .signers([vendorAuthority])
       .rpc();
   });
 
-  // it("Create Device", async () => {
-  //   const vendor = anchor.web3.Keypair.generate();
-  //   const vendor_pk = vendor.publicKey;
+  it("Create device and did", async () => {
+    const deviceName = "Banana";
+    const serialNum = "123456789";
+    const mintAt = Date.now();
 
-  //   const device = anchor.web3.Keypair.generate();
-  //   const device_pk = device.publicKey;
+    await program.methods.createDeviceAndDid({
+      name: deviceName,
+      serialNum: serialNum,
+      mintAt: new BN(mintAt),
+    })
+      .accounts({
+        payer: vendorAuthority.publicKey,
+        vendor: vendorPDA,
+        vendorAuthority: vendorAuthority.publicKey,
+        product: productPDA,
+        device: device.publicKey,
+        deviceDid: deviceDidPDA,
+        treasury: treasury.publicKey,
+        admin: adminPDA,
+        global: globalPDA,
+      })
+      .signers([vendorAuthority, device])
+      .rpc()
 
-  //   const tx = await program.methods.createDevice().accounts({
-  //     payer: signer.publicKey,
-  //     vendorAuthority: vendor_pk,
-  //     device: device_pk,
-  //     systemProgram: anchor.web3.SystemProgram.programId
-  //   }).rpc();
+    // check treasury add 0.05 sol
+    const treasuryInfo = await provider.connection.getAccountInfo(treasury.publicKey);
+    console.log(`The lamport amount of treasury is: ${treasuryInfo.lamports}`);
+  });
 
-  // });
+  it("Activate Device", async () => {
+    const privateKey = ethUtil.hexToBytes("0x1111111111111111111111111111111111111111111111111111111111111111");
+    const publicKey = ethUtil.privateToPublic(privateKey);
 
-  // it("Mint DeviceDid", async () => {
+    const slot = await provider.connection.getSlot();
+    const messageTime = await provider.connection.getBlockTime(slot);
+    const hashedMessageForActivation = keccak256(numberToUnit8Array(messageTime));
 
-  //   const vendor = anchor.web3.Keypair.generate();
-  //   const vendor_pk = vendor.publicKey;
+    const { r, s, v } = ethUtil.ecsign(hashedMessageForActivation, privateKey);
+    const signature = Uint8Array.from([...r, ...s]);
+    const recoveryId = Number(ethUtil.calculateSigRecovery(v));
 
-  //   const accept_account = anchor.web3.Keypair.generate();
-  //   const accept_account_pk = accept_account.publicKey;
-
-  //   interface MintDeviceDidArgs {
-  //     name: string;
-  //     serialNum: string;
-  //     mintAt: number; // u32
-  //   }
-
-  //   const currTime = Math.floor(Date.now() / 1000);
-
-  //   let args: MintDeviceDidArgs = {
-  //     name: "Mi Temperature and Humidity Monitor",
-  //     serialNum: "11034",
-  //     mintAt: currTime,
-  //   }
-
-  //   const tx = await program.methods.mintDeviceDid(args).accounts({
-  //     payer: signer.publicKey,
-  //     vendorAuthority: vendor_pk,
-  //     acceptSol: accept_account_pk,
-  //     systemProgram: anchor.web3.SystemProgram.programId
-  //   }).rpc();
-
-  // });
-
-  // it("Activate Device", async () => {
-  //   const device = anchor.web3.Keypair.generate();
-  //   const device_pk = device.publicKey;
-
-  //   const vendor = anchor.web3.Keypair.generate();
-  //   const vendor_pk = vendor.publicKey;
-
-  //   const holder = anchor.web3.Keypair.generate();
-  //   const holder_pk = holder.publicKey;
-
-  //   const tx = await program.methods.activateDevice().accounts({
-  //     payer: signer.publicKey,
-  //     device: device_pk ,
-  //     vendorAuthority: vendor_pk,
-  //     newHolder: holder_pk,
-  //   }).rpc();
-
-  // });
+    await program.methods
+      .activateDevice({
+        publicKey: Array.from(publicKey),
+        message: Buffer.from(numberToUnit8Array(messageTime)),
+        signature: Array.from(signature),
+        recoveryId: recoveryId,
+      })
+      .accounts({
+        device: device.publicKey,
+      })
+      .rpc();
+  });
 
 });
