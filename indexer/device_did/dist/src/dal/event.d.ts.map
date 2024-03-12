@@ -1,0 +1,1 @@
+{"version":3,"file":"event.d.ts","sourceRoot":"","sources":["../../../src/dal/event.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,aAAa,EAAE,MAAM,qBAAqB,CAAA;AACnD,OAAO,EAAE,cAAc,EAAE,MAAM,2BAA2B,CAAA;AAE1D,MAAM,MAAM,YAAY,GAAG,aAAa,CAAC,cAAc,CAAC,CAAA;AAUxD,oBAAY,aAAa;IACvB,gBAAgB,sBAAsB;IACtC,oBAAoB,2BAA2B;CAChD;AAsBD,wBAAgB,cAAc,CAAC,IAAI,EAAE,MAAM,GAAG,YAAY,CAkCzD"}

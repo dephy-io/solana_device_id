@@ -1,0 +1,1 @@
+{"version":3,"file":"accounts.d.ts","sourceRoot":"","sources":["../../../../src/utils/layouts/accounts.ts"],"names":[],"mappings":";AAeA,oBAAY,WAAW;IACrB,KAAK,UAAU;IACf,MAAM,WAAW;IACjB,MAAM,WAAW;IACjB,OAAO,YAAY;IACnB,MAAM,WAAW;IACjB,GAAG,QAAQ;CACZ;AAED,eAAO,MAAM,qBAAqB,EAAE,MAAM,CAAC,WAAW,EAAE,MAAM,CAO7D,CAAA;AAED,eAAO,MAAM,oBAAoB,EAAE,MAAM,CAAC,WAAW,EAAE,GAAG,CAOzD,CAAA"}

@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  device_did:
+    build: ../..
+    volumes:
+      - ~/indexer.data:/app/data:rw
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    env_file:
+      - ../../.env
+      - ./.env
+    environment:
+      - INDEXER=device_did
+      - LETSENCRYPT_HOST=device_did.api.aleph.cloud
+      - VIRTUAL_HOST=device_did.api.aleph.cloud
+      - VIRTUAL_PORT=8080
+      - SOLANA_RPC=
+    network_mode: bridge
