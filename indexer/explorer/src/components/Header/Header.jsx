@@ -29,6 +29,14 @@ const items = [
     ),
     key: 'did',
   },
+  {
+    label: (
+      <a href="/event">
+        Event
+      </a>
+    ),
+    key: 'event',
+  },
 ]
 
 export default function MainHeader() {

@@ -8,6 +8,7 @@ import MainFooter from './components/Footer/Footer';
 import Account from './pages/account/Account';
 import Device from './pages/device/Device';
 import Did from './pages/did/Did';
+import Event from './pages/event/Event';
 
 function App(props) {
   return (
@@ -18,6 +19,8 @@ function App(props) {
           <Route path="/account" element={<Account />}></Route>
           <Route path="/device" element={<Device />}></Route>
           <Route path="/did" element={<Did />}></Route>
+          <Route path="/event" element={<Event />}></Route>
+
         </Routes>
 
         {props.children}
