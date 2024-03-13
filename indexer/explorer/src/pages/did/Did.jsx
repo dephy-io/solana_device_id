@@ -1,11 +1,11 @@
 import React from "react";
 import { useState, useEffect } from 'react';
 import { Space, Table } from 'antd';
-import axios, {isCancel, AxiosError} from 'axios';
+import axios from 'axios';
 
-import "./device.css";
+import "./did.css";
 
-const getDevices = async () => {
+const getDids = async () => {
   const BASE_URL = "http://localhost:8080"
 
   const headers = {
@@ -14,7 +14,7 @@ const getDevices = async () => {
 
   const graphqlQuery = {
     // "operationName": "",
-    "query": `query {accounts(types: ["Device"]) { name type address }}`,
+    "query": `query {accounts(types: ["Did"]) { name type address }}`,
     "variables": {},
   };
 
@@ -30,13 +30,13 @@ const getDevices = async () => {
 }
 
 export default function Device() {
-  console.log(/Device/)
+  console.log(/Did/)
 
-  const [devices, setDevices] = useState([])
+  const [dids, setDids] = useState([])
 
   useEffect(() => {
-    getDevices().then((resp)=>{
-      setDevices(resp)
+    getDids().then((resp)=>{
+      setDids(resp)
     })
   },[]);
 
@@ -77,7 +77,7 @@ export default function Device() {
 
   return (
     <>
-    <Table columns={columns} dataSource={devices} />
+    <Table columns={columns} dataSource={dids} />
     </>
   )
 }

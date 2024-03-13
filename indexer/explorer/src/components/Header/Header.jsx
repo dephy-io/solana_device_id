@@ -15,11 +15,19 @@ const items = [
   },
   {
     label: (
-      <a href="/devices">
+      <a href="/device">
         Devices
       </a>
     ),
     key: 'device',
+  },
+  {
+    label: (
+      <a href="/did">
+        Did
+      </a>
+    ),
+    key: 'did',
   },
 ]
 
