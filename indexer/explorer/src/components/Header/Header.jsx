@@ -15,19 +15,19 @@ const items = [
   },
   {
     label: (
-      <a href="/device">
-        Devices
-      </a>
-    ),
-    key: 'device',
-  },
-  {
-    label: (
       <a href="/did">
         Did
       </a>
     ),
     key: 'did',
+  },
+  {
+    label: (
+      <a href="/device">
+        Devices
+      </a>
+    ),
+    key: 'device',
   },
   {
     label: (
