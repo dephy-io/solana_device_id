@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from 'react';
 import { Space, Table } from 'antd';
 import axios from 'axios';
+import { DateTime } from 'luxon'
 
 import "./did.css";
 
@@ -12,9 +13,27 @@ const getDids = async () => {
     "content-type": "application/json",
   };
 
+  const queryStr = `query
+  {
+    accounts(types: ["Did"]) {
+      name
+      type
+      address
+      data {
+        __typename
+        ... on Did {
+          name
+          serialNum
+          mintAt
+          owner
+        }
+      }
+    }
+  }`
+
   const graphqlQuery = {
     // "operationName": "",
-    "query": `query {accounts(types: ["Did"]) { name type address }}`,
+    "query": queryStr,
     "variables": {},
   };
 
@@ -63,6 +82,19 @@ export default function Device() {
     {
       title: 'Addr',
       dataIndex: 'address',
+    },
+    {
+      title: 'Did Name',
+      dataIndex: ["data", "name"],
+    },
+    {
+      title: 'Serial Num',
+      dataIndex: ["data", "serialNum"],
+    },
+    {
+      title: 'Time',
+      dataIndex: ["data", "mintAt"],
+      render: (text) =><span>{ DateTime.fromMillis(parseInt(text)).toFormat("yyyy-MM-dd HH:mm:ss") }</span> ,
     },
     {
       title: 'Action',

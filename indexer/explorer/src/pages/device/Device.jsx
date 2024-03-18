@@ -12,9 +12,25 @@ const getDevices = async () => {
     "content-type": "application/json",
   };
 
+  const queryStr = `query
+  {
+    accounts(types: ["Device"]) {
+      name
+      type
+      address
+      data {
+        __typename
+        ... on Device {
+          deviceDidAddress
+        }
+      }
+    }
+  }
+  `
+
   const graphqlQuery = {
     // "operationName": "",
-    "query": `query {accounts(types: ["Device"]) { name type address }}`,
+    "query": queryStr,
     "variables": {},
   };
 
@@ -63,6 +79,10 @@ export default function Device() {
     {
       title: 'Addr',
       dataIndex: 'address',
+    },
+    {
+      title: 'deviceDidAddress',
+      dataIndex: ["data", "deviceDidAddress"],
     },
     {
       title: 'Action',
