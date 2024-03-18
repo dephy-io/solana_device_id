@@ -176,27 +176,28 @@ export const Did = new GraphQLObjectType({
     bumpSeed: { type: new GraphQLNonNull(GraphQLInt) },
   },
 })
+
 export const ParsedAccountsData = new GraphQLUnionType({
   name: 'ParsedAccountsData',
   types: [Admin, Global, Vendor, Product, Device, Did],
   resolveType: (obj) => {
     // here is selected a unique property of each account to discriminate between types
-    if (obj.bumpSeed) {
+    if (obj.treasury) {
       return 'Admin'
     }
     if (obj.allowRegAddr) {
       return 'Global'
     }
-    if (obj.bumpSeed) {
+    if (obj.authority) {
       return 'Vendor'
     }
-    if (obj.bumpSeed) {
+    if (obj.devicesNums) {
       return 'Product'
     }
     if (obj.deviceDidAddress) {
       return 'Device'
     }
-    if (obj.bumpSeed) {
+    if (obj.serialNum) {
       return 'Did'
     }
   },
