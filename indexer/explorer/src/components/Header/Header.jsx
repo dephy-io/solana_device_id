@@ -1,8 +1,9 @@
 import React from 'react';
-import { useRef, useEffect, useState } from 'react';
+import {
+  WalletMultiButton
+} from "@solana/wallet-adapter-react-ui";
 
 import { Menu, Layout } from 'antd';
-import { Breadcrumb, Space, Table, Tag, theme } from 'antd';
 
 const items = [
   {
@@ -62,6 +63,8 @@ export default function MainHeader() {
             minWidth: 0,
           }}
         />
+
+        <WalletMultiButton />
       </Header>
   );
 }
