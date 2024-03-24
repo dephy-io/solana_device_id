@@ -1,0 +1,716 @@
+{
+  "version": "0.1.0",
+  "name": "device_did",
+  "instructions": [
+    {
+      "name": "initializeAdmin",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "admin"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "InitializeAdminArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initializeGlobal",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "admin"
+              }
+            ]
+          }
+        },
+        {
+          "name": "adminKey",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "global",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "InitializeGlobalArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "createVendor",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "global",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global"
+              }
+            ]
+          }
+        },
+        {
+          "name": "adminKey",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "vendor",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "vendor"
+              },
+              {
+                "kind": "arg",
+                "type": {
+                  "defined": "CreateVendorArgs"
+                },
+                "path": "args.authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "CreateVendorArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "createProductCollection",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "vendor",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "vendor"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "vendor_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vendorAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "global",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global"
+              }
+            ]
+          }
+        },
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "product"
+              },
+              {
+                "kind": "arg",
+                "type": {
+                  "defined": "CreateProductCollectionArgs"
+                },
+                "path": "args.name"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "vendor_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "CreateProductCollectionArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "createDeviceAndDid",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "vendor",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "vendor"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "vendor_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vendorAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "product",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "product"
+              },
+              {
+                "kind": "account",
+                "type": "string",
+                "account": "Product",
+                "path": "product.name"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "vendor_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "device",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "deviceDid",
+          "isMut": true,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "did"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "Device",
+                "path": "device"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "admin"
+              }
+            ]
+          }
+        },
+        {
+          "name": "global",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "global"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "CreateDeviceAndDidArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "activateDevice",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "device",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "ActivateDeviceArgs"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Admin",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "treasury",
+            "type": "publicKey"
+          },
+          {
+            "name": "bumpSeed",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Global",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "regFee",
+            "type": "u64"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "bumpSeed",
+            "type": "u8"
+          },
+          {
+            "name": "allowRegAddr",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vendor",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "bumpSeed",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Product",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "devicesNums",
+            "type": "u32"
+          },
+          {
+            "name": "bumpSeed",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Device",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "holder",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "deviceState",
+            "type": {
+              "defined": "DeviceState"
+            }
+          },
+          {
+            "name": "deviceDidAddress",
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Did",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "serialNum",
+            "type": "string"
+          },
+          {
+            "name": "mintAt",
+            "type": "u64"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "bumpSeed",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "ActivateDeviceArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "publicKey",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "message",
+            "type": "bytes"
+          },
+          {
+            "name": "signature",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "recoveryId",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateDeviceAndDidArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "serialNum",
+            "type": "string"
+          },
+          {
+            "name": "mintAt",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateProductCollectionArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateVendorArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeAdminArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "treasury",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeGlobalArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "regFee",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DeviceState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Frozen"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Lock"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAdmin",
+      "msg": "Invalid admin."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAdminAuthority",
+      "msg": "Invalid admin authority."
+    },
+    {
+      "code": 6002,
+      "name": "InvalidTreasury",
+      "msg": "Invalid treasury."
+    },
+    {
+      "code": 6003,
+      "name": "InvalidVendorKey",
+      "msg": "Invalid vendor key."
+    },
+    {
+      "code": 6004,
+      "name": "InvalidPublicKey",
+      "msg": "Publick key is invalid."
+    },
+    {
+      "code": 6005,
+      "name": "InvalidValidationTime",
+      "msg": "Out of valid validation time."
+    }
+  ]
+}
