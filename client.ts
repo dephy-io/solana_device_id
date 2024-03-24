@@ -1,24 +1,34 @@
-import crypto from 'crypto';
+import crypto from "crypto";
 import { BN } from "bn.js";
 import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import { Program, Idl } from "@coral-xyz/anchor";
 import { loadKeypair, numberToUnit8Array } from "./utils/utils";
 import * as ethUtil from "@ethereumjs/util";
 import { keccak256 } from "ethereum-cryptography/keccak.js";
 import { DeviceDid } from "./target/types/device_did";
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
+import { PublicKey } from "@solana/web3.js";
 
-const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+import idl from "./target/idl/device_did.json";
+
+const sleep = (delay: number) =>
+  new Promise((resolve) => setTimeout(resolve, delay));
 
 // export ANCHOR_WALLET=~/.config/solana/id.json
 
-// Configure the client to use the local cluster.
-const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
+const devrpc = "";
+const localrpc = "http://127.0.0.1:8899";
+
+const provider = anchor.AnchorProvider.local(localrpc);
 anchor.setProvider(provider);
 
-const program = anchor.workspace.DeviceDid as Program<DeviceDid>;
+const addr = "1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg";
+const programId = new PublicKey(addr);
 
-const adminKey = loadKeypair("./keypairs/admin.json");
+const program = new Program(idl as Idl, programId, provider);
+// const program = anchor.workspace.DeviceDid as Program<DeviceDid>;
+
+const admin = loadKeypair("./keypairs/admin.json");
 const treasury = loadKeypair("./keypairs/treasury.json");
 const adminAuthority = loadKeypair("./keypairs/admin-authority.json");
 const vendorAuthority = loadKeypair("./keypairs/vendor-authority.json");
@@ -32,47 +42,51 @@ const regFee = anchor.web3.LAMPORTS_PER_SOL * 0.05;
 // PDA for admin
 const [adminPDA] = anchor.web3.PublicKey.findProgramAddressSync(
   [Buffer.from("admin")],
-  program.programId,
-)
+  program.programId
+);
 
 // PDA for global
-const [globalPDA, ] = anchor.web3.PublicKey.findProgramAddressSync(
+const [globalPDA] = anchor.web3.PublicKey.findProgramAddressSync(
   [Buffer.from("global")],
-  program.programId,
-)
+  program.programId
+);
 
 // PDA for vendor
 const [vendorPDA] = anchor.web3.PublicKey.findProgramAddressSync(
   [Buffer.from("vendor"), vendorAuthority.publicKey.toBytes()],
-  program.programId,
-)
+  program.programId
+);
 
 // PDA for product
 const [productPDA] = anchor.web3.PublicKey.findProgramAddressSync(
-  [Buffer.from("product"), Buffer.from(productName), vendorAuthority.publicKey.toBytes()],
-  program.programId,
-)
+  [
+    Buffer.from("product"),
+    Buffer.from(productName),
+    vendorAuthority.publicKey.toBytes(),
+  ],
+  program.programId
+);
 
 async function airdrop(num) {
   console.log(`airdrop ${num}`);
 
   await provider.connection.requestAirdrop(
     vendorAuthority.publicKey,
-    anchor.web3.LAMPORTS_PER_SOL * num,
+    anchor.web3.LAMPORTS_PER_SOL * num
   );
-
 }
 
-async function goready() {
+async function init() {
   await airdrop(1000);
 
-  const adminPDAAddr = adminPDA.toBase58();
-  console.log("adminPDAAddr: ", adminPDAAddr);
+  const adminPdaAddr = adminPDA.toBase58();
+  console.log("adminPdaAddr: ", adminPdaAddr);
+  // DuJehRgE69dJ6GDSYWuNKLSDs431R8tBiueyvuFAhs6G
 
   // Initialize Admin
   await program.methods
     .initializeAdmin({
-      admin: adminKey.publicKey,
+      admin: admin.publicKey,
       authority: adminAuthority.publicKey,
       treasury: treasury.publicKey,
     })
@@ -80,41 +94,48 @@ async function goready() {
       admin: adminPDA,
     })
     .rpc();
-    console.log(/initializeAdmin/);
+  console.log(/initializeAdmin/);
+
+  await sleep(1000 * 5);
 
   // Initialize Global
   console.log(/initializeGlobal/);
-  await program.methods.initializeGlobal({
+  await program.methods
+    .initializeGlobal({
       regFee: new BN(regFee),
     })
     .accounts({
       admin: adminPDA,
-      adminKey: adminKey.publicKey,
+      adminKey: admin.publicKey,
       global: globalPDA,
     })
-    .signers([adminKey])
+    .signers([admin])
     .rpc();
 
+  await sleep(1000 * 5);
 
   // Create Vendor
   console.log(/createVendor/);
-  await program.methods.createVendor({
+  await program.methods
+    .createVendor({
       name: vendorName,
       authority: vendorAuthority.publicKey,
     })
     .accounts({
       payer: vendorAuthority.publicKey,
       global: globalPDA,
-      adminKey: adminKey.publicKey,
+      adminKey: admin.publicKey,
       vendor: vendorPDA,
     })
-    .signers([vendorAuthority, adminKey])
+    .signers([vendorAuthority, admin])
     .rpc();
 
+  await sleep(1000 * 5);
 
   // Create ProductCollection
   console.log(/createProductCollection/);
-  await program.methods.createProductCollection({
+  await program.methods
+    .createProductCollection({
       name: productName,
     })
     .accounts({
@@ -126,6 +147,8 @@ async function goready() {
     })
     .signers([vendorAuthority])
     .rpc();
+
+  await sleep(1000 * 5);
 }
 
 // 注册设备
@@ -138,8 +161,8 @@ async function enrollDevice() {
   // PAD for device did
   const [deviceDidPDA] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from("did"), device.publicKey.toBytes()],
-    program.programId,
-  )
+    program.programId
+  );
 
   const deviceName = faker.company.name();
   console.log("deviceName: ", deviceName);
@@ -151,7 +174,8 @@ async function enrollDevice() {
 
   const mintAt = Date.now();
 
-  await program.methods.createDeviceAndDid({
+  await program.methods
+    .createDeviceAndDid({
       name: deviceName,
       serialNum: serialNum,
       mintAt: new BN(mintAt),
@@ -168,18 +192,20 @@ async function enrollDevice() {
       global: globalPDA,
     })
     .signers([vendorAuthority, device])
-    .rpc()
+    .rpc();
 
   // check treasury add 0.05 sol
-  const treasuryInfo = await provider.connection.getAccountInfo(treasury.publicKey);
+  const treasuryInfo = await provider.connection.getAccountInfo(
+    treasury.publicKey
+  );
   console.log(`The lamport amount of treasury is: ${treasuryInfo.lamports}`);
 
-  activate(device)
+  activate(device);
 }
 
 // Activate Device
 async function activate(deviceKp) {
-  const _priv_key = crypto.randomBytes(32)
+  const _priv_key = crypto.randomBytes(32);
 
   // const privateKey = ethUtil.hexToBytes("0x1111111111111111111111111111111111111111111111111111111111111111");
   const publicKey = ethUtil.privateToPublic(_priv_key);
@@ -192,7 +218,7 @@ async function activate(deviceKp) {
   const messageTime = await provider.connection.getBlockTime(slot);
 
   const hashedMessageForActivation = keccak256(numberToUnit8Array(messageTime));
-  const { r,s,v } = ethUtil.ecsign(hashedMessageForActivation, _priv_key);
+  const { r, s, v } = ethUtil.ecsign(hashedMessageForActivation, _priv_key);
   const signature = Uint8Array.from([...r, ...s]);
   const recoveryId = Number(ethUtil.calculateSigRecovery(v));
 
@@ -208,21 +234,21 @@ async function activate(deviceKp) {
     })
     .rpc();
 
-    console.log(/Activate/);
+  console.log(/Activate/);
 }
 
 async function main() {
-  goready()
+  // init()
 
-  let num = 0
+  let num = 0;
 
   for (;;) {
-    num += 1
+    num += 1;
     console.log(`num ${num}`);
-    enrollDevice()
-    await sleep(2000)
+    enrollDevice();
+    await sleep(1000 * 5);
     console.log("-".repeat(50));
   }
 }
 
-main()
+main();
