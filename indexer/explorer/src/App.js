@@ -42,7 +42,7 @@ function App() {
               <MainHeader network={network} onChangeNetwork={setNetwork} />
               <div style={{minHeight: `calc(100vh - 130px)`}}>
                 <Routes>
-                  <Route path="/" element={null}></Route>
+                  <Route path="/" element={<InitSteps/>}></Route>
                   <Route path="/steps" element={<InitSteps />}></Route>
                   <Route path="/account" element={<Account />}></Route>
                   <Route path="/device" element={<Device />}></Route>
