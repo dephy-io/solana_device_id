@@ -7,7 +7,7 @@ import { DateTime } from 'luxon'
 import "./did.css";
 
 const getDids = async () => {
-  const BASE_URL = "http://localhost:8080"
+  const BASE_URL = process.env.REACT_APP_API_ENDPOINT
 
   const headers = {
     "content-type": "application/json",

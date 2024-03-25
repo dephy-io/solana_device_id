@@ -2,8 +2,7 @@ import { Program } from "@coral-xyz/anchor";
 import useAnchorProvider from "./useAnchorProvider";
 import idl from "../idl/device_did.json";
 
-export const DEVICE_DID_PROGRAM_ID =
-  "1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg";
+export const DEVICE_DID_PROGRAM_ID = process.env.REACT_APP_PROGRAM_ID
 
 const useDeviceProgram = () => {
   const provider = useAnchorProvider();
