@@ -20,6 +20,8 @@ import Account from "./pages/account/Account";
 import Device from "./pages/device/Device";
 import Did from "./pages/did/Did";
 import Event from "./pages/event/Event";
+import Activate from "./pages/activate/Activate";
+
 import("@solana/wallet-adapter-react-ui/styles.css");
 
 const DEFAULT_NETWORK = WalletAdapterNetwork.Devnet;
@@ -48,6 +50,7 @@ function App() {
                   <Route path="/device" element={<Device />}></Route>
                   <Route path="/did" element={<Did />}></Route>
                   <Route path="/event" element={<Event />}></Route>
+                  <Route path="/activate" element={<Activate />}></Route>
                 </Routes>
               </div>
               <MainFooter />

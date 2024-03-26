@@ -25,6 +25,10 @@ const items = [
     label: <a href="/event">Event</a>,
     key: "event",
   },
+  {
+    label: <a href="/activate">Activate Device</a>,
+    key: "activate",
+  },
 ];
 
 export default function MainHeader({ network, onChangeNetwork }) {
