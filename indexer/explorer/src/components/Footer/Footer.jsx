@@ -10,7 +10,7 @@ export default function MainFooter() {
       textAlign: 'center',
     }}
   >
-    DePINscan ©{new Date().getFullYear()}
+    DePHYDID ©{new Date().getFullYear()}
   </Footer>
   );
 }

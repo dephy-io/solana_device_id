@@ -1,12 +1,12 @@
 import React from "react";
-import { useState, useEffect } from 'react';
-import { Space, Table } from 'antd';
-import axios, {isCancel, AxiosError} from 'axios';
+import { useState, useEffect } from "react";
+import { Space, Table } from "antd";
+import axios, { isCancel, AxiosError } from "axios";
 
 import "./account.css";
 
 const getAccounts = async () => {
-  const BASE_URL = process.env.REACT_APP_API_ENDPOINT
+  const BASE_URL = process.env.REACT_APP_API_ENDPOINT;
 
   const headers = {
     "content-type": "application/json",
@@ -14,70 +14,64 @@ const getAccounts = async () => {
 
   const graphqlQuery = {
     // "operationName": "",
-    "query": `query {accounts{ name type address }}`,
-    "variables": {},
+    query: `query {accounts{ name type address }}`,
+    variables: {},
   };
 
   const resp = await axios({
     url: BASE_URL,
-    method: 'post',
+    method: "post",
     headers: headers,
-    data: graphqlQuery
+    data: graphqlQuery,
   });
 
-  const res = resp["data"]["data"]["accounts"]
-  return res
-}
+  const res = resp["data"]["data"]["accounts"];
+  return res;
+};
 
 export default function Account() {
-  console.log(/Account/)
+  console.log(/Account/);
 
-  const [accounts, setAccounts] = useState([])
+  const [accounts, setAccounts] = useState([]);
 
   useEffect(() => {
-    getAccounts().then((resp)=>{
-      setAccounts(resp)
-    })
-  },[]);
+    getAccounts().then((resp) => {
+      setAccounts(resp);
+    });
+  }, []);
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: '5%',
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: "5%",
       sorter: (a, b) => a.id - b.id,
-      render: (id, record, index) => { ++index; return index; },
+      render: (id, record, index) => {
+        ++index;
+        return index;
+      },
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       render: (text) => <a>{text.slice(0, 5)}</a>,
     },
     {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
     },
     {
-      title: 'Addr',
-      dataIndex: 'address',
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a>View {record.name.slice(0,5)}</a>
-        </Space>
-      ),
+      title: "Addr",
+      dataIndex: "address",
     },
   ];
 
   return (
     <>
-    <Table columns={columns} dataSource={accounts} />
+      <Table columns={columns} dataSource={accounts} />
     </>
-  )
+  );
 }

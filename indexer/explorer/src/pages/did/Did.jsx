@@ -1,13 +1,13 @@
 import React from "react";
-import { useState, useEffect } from 'react';
-import { Space, Table } from 'antd';
-import axios from 'axios';
-import { DateTime } from 'luxon'
+import { useState, useEffect } from "react";
+import { Space, Table } from "antd";
+import axios from "axios";
+import { DateTime } from "luxon";
 
 import "./did.css";
 
 const getDids = async () => {
-  const BASE_URL = process.env.REACT_APP_API_ENDPOINT
+  const BASE_URL = process.env.REACT_APP_API_ENDPOINT;
 
   const headers = {
     "content-type": "application/json",
@@ -29,87 +29,88 @@ const getDids = async () => {
         }
       }
     }
-  }`
+  }`;
 
   const graphqlQuery = {
     // "operationName": "",
-    "query": queryStr,
-    "variables": {},
+    query: queryStr,
+    variables: {},
   };
 
   const resp = await axios({
     url: BASE_URL,
-    method: 'post',
+    method: "post",
     headers: headers,
-    data: graphqlQuery
+    data: graphqlQuery,
   });
 
-  const res = resp["data"]["data"]["accounts"]
-  return res
-}
+  const res = resp["data"]["data"]["accounts"];
+  return res;
+};
 
 export default function Device() {
-  console.log(/Did/)
+  console.log(/Did/);
 
-  const [dids, setDids] = useState([])
+  const [dids, setDids] = useState([]);
 
   useEffect(() => {
-    getDids().then((resp)=>{
-      setDids(resp)
-    })
-  },[]);
+    getDids().then((resp) => {
+      setDids(resp);
+    });
+  }, []);
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: '5%',
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: "5%",
       sorter: (a, b) => a.id - b.id,
-      render: (id, record, index) => { ++index; return index; },
+      render: (id, record, index) => {
+        ++index;
+        return index;
+      },
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       render: (text) => <a>{text.slice(0, 5)}</a>,
     },
     {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
     },
     {
-      title: 'Addr',
-      dataIndex: 'address',
+      title: "Addr",
+      dataIndex: "address",
     },
     {
-      title: 'Did Name',
+      title: "Did Name",
+      key: "data-name",
       dataIndex: ["data", "name"],
     },
     {
-      title: 'Serial Num',
+      title: "Serial Num",
+      key: "data-serialNum",
       dataIndex: ["data", "serialNum"],
     },
     {
-      title: 'Time',
+      title: "Time",
+      key: "data-mintAt",
       dataIndex: ["data", "mintAt"],
-      render: (text) =><span>{ DateTime.fromMillis(parseInt(text)).toFormat("yyyy-MM-dd HH:mm:ss") }</span> ,
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a>View {record.name.slice(0,5)}</a>
-        </Space>
+      render: (text) => (
+        <span>
+          {DateTime.fromMillis(parseInt(text)).toFormat("yyyy-MM-dd HH:mm:ss")}
+        </span>
       ),
     },
   ];
 
   return (
     <>
-    <Table columns={columns} dataSource={dids} />
+      <Table columns={columns} dataSource={dids} />
     </>
-  )
+  );
 }

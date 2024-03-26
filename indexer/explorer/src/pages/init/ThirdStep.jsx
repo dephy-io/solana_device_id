@@ -53,9 +53,9 @@ export default function ThirdStep() {
         .signers([vendorAuthority, admin])
         .rpc();
 
-      toast('CreateProductCollection success');
+      toast('CreateVendor success');
     } catch (err) {
-      toast.error('CreateProductCollection error');
+      toast.error('CreateVendor error');
       console.error("CreateVendor error:", err);
     }
   };
