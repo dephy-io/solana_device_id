@@ -1,4 +1,5 @@
-import { Button, Divider, Input } from "antd";
+import toast, { Toaster } from 'react-hot-toast';
+import { Button, Divider, Input , Alert} from "antd";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { LAMPORTS_PER_SOL, Keypair, PublicKey } from "@solana/web3.js";
@@ -41,17 +42,22 @@ export default function FirstStep() {
           admin: adminPDA,
         })
         .rpc();
+
+      toast('initAdmin success');
     } catch (error) {
+      toast.error('initAdmin error');
       console.error("initAdmin error:", error);
     }
   };
 
   return (
     <div style={{ textAlign: "center" }}>
-      <section>
+      <section style={{ paddingTop: "5px" }}>
+        <Toaster position="top-center" />
         <Button type="primary" onClick={initAdmin}>
           Init Admin
         </Button>
+
       </section>
     </div>
   );

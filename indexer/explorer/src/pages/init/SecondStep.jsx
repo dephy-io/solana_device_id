@@ -1,5 +1,6 @@
+import toast, { Toaster } from 'react-hot-toast';
 import { BN } from "bn.js";
-import { Button, Divider, Input } from "antd";
+import { Button, Divider, Input, Alert } from "antd";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { LAMPORTS_PER_SOL, Keypair, PublicKey } from "@solana/web3.js";
@@ -46,7 +47,11 @@ export default function SecondStep() {
           global: globalPDA,
         })
         .rpc();
+
+        toast('initGlobal success');
+
     } catch (err) {
+      toast.error('initGlobal erros');
       console.error("initGlobal error:", err);
     }
   };
@@ -59,13 +64,14 @@ export default function SecondStep() {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <section>
+      <section style={{ paddingTop: "5px" }}>
+        <Toaster position="top-center" />
         <Input type="number" suffix="Sol" placeholder="Fee" onChange={onChangeHandler} />
 
         <Button
           type="primary"
           onClick={initGlobal}
-          style={{ marginTop: "16px" }}
+          style={{ marginTop: "10px" }}
         >
           Init Global
         </Button>

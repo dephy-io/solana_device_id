@@ -1,4 +1,5 @@
-import { Button, Divider, Input } from "antd";
+import toast, { Toaster } from 'react-hot-toast';
+import { Button, Divider, Input, Alert } from "antd";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { LAMPORTS_PER_SOL, Keypair, PublicKey } from "@solana/web3.js";
@@ -51,7 +52,10 @@ export default function ThirdStep() {
         })
         .signers([vendorAuthority, admin])
         .rpc();
+
+      toast('CreateProductCollection success');
     } catch (err) {
+      toast.error('CreateProductCollection error');
       console.error("CreateVendor error:", err);
     }
   };
@@ -65,6 +69,8 @@ export default function ThirdStep() {
   return (
     <div style={{ textAlign: "center" }}>
       <section style={{ paddingTop: "5px" }}>
+        <Toaster position="top-center" />
+
         <Input type="text" onChange={onChangeHandler} placeholder="vendor name"/>
 
         <Button
