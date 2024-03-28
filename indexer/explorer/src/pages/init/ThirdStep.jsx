@@ -21,7 +21,9 @@ const admin = loadKeypair(adminKey);
 const vendorAuthority = loadKeypair(vendorAuthorityKey);
 
 export default function ThirdStep() {
+ // const program = useDeviceProgram();
  const _program_addr = localStorage.getItem("_program_addr")
+ console.log("_program_addr: ", _program_addr)
  const program = initProgram(_program_addr);
 
   const [vendorName, setVendorName] = useState("");

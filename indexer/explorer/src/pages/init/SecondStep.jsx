@@ -17,8 +17,10 @@ export function loadKeypair(keyData) {
 const admin = loadKeypair(adminKey);
 
 export default function SecondStep() {
-  const _program_addr = localStorage.getItem("_program_addr")
-  const program = initProgram(_program_addr);
+ // const program = useDeviceProgram();
+ const _program_addr = localStorage.getItem("_program_addr")
+ console.log("_program_addr: ", _program_addr)
+ const program = initProgram(_program_addr);
 
   const [fee, setFee] = useState(0.0);
 

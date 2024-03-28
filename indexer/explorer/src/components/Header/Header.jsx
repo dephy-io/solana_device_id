@@ -10,7 +10,7 @@ const items = [
     key: "program",
   },
   {
-    label: <a href="/init">Initialize</a>,
+    label: <a href="/steps">Initialize</a>,
     key: "init",
   },
   {

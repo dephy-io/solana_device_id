@@ -22,9 +22,10 @@ export default function FirstStep() {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
 
-  // const program = useDeviceProgram();
-  const _program_addr = localStorage.getItem("_program_addr")
-  const program = initProgram(_program_addr);
+ // const program = useDeviceProgram();
+ const _program_addr = localStorage.getItem("_program_addr")
+ console.log("_program_addr: ", _program_addr)
+ const program = initProgram(_program_addr);
 
   // PDA for admin
   const [adminPDA] = anchor.web3.PublicKey.findProgramAddressSync(
