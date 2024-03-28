@@ -15,6 +15,7 @@ import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import MainHeader from "./components/Header/Header";
 import MainFooter from "./components/Footer/Footer";
 
+import Program from "./pages/program/Program";
 import InitSteps from "./pages/init/InitSteps";
 import Account from "./pages/account/Account";
 import Device from "./pages/device/Device";
@@ -44,7 +45,7 @@ function App() {
               <MainHeader network={network} onChangeNetwork={setNetwork} />
               <div style={{minHeight: `calc(100vh - 130px)`}}>
                 <Routes>
-                  <Route path="/" element={<InitSteps/>}></Route>
+                  <Route path="/" element={<Program/>}></Route>
                   <Route path="/steps" element={<InitSteps />}></Route>
                   <Route path="/account" element={<Account />}></Route>
                   <Route path="/device" element={<Device />}></Route>

@@ -4,8 +4,15 @@ import idl from "../idl/device_did.json";
 
 export const DEVICE_DID_PROGRAM_ID = process.env.REACT_APP_PROGRAM_ID
 
+export const initProgram = (program_id) => {
+  console.log("initProgram PROGRAM_ID: ", DEVICE_DID_PROGRAM_ID);
+  const provider = useAnchorProvider();
+  const program = new Program(idl, program_id, provider);
+  return program;
+};
+
 const useDeviceProgram = () => {
-  console.log("PROGRAM_ID: ", DEVICE_DID_PROGRAM_ID);
+  console.log("useDeviceProgram PROGRAM_ID: ", DEVICE_DID_PROGRAM_ID);
   const provider = useAnchorProvider();
   const program = new Program(idl, DEVICE_DID_PROGRAM_ID, provider);
   return program;

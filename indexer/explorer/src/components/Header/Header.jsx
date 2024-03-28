@@ -6,8 +6,12 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const items = [
   {
-    label: <a href="/">Initialize</a>,
-    key: "Init",
+    label: <a href="/">Program</a>,
+    key: "program",
+  },
+  {
+    label: <a href="/init">Initialize</a>,
+    key: "init",
   },
   {
     label: <a href="/account">All Accounts</a>,
