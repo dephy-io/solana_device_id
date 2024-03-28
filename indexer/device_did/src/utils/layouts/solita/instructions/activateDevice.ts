@@ -12,6 +12,8 @@ import {
   activateDeviceArgsBeet,
 } from '../types/ActivateDeviceArgs.js'
 
+import { PROGRAM_ID } from '../../constants.js'
+
 /**
  * @category Instructions
  * @category ActivateDevice
@@ -65,11 +67,12 @@ export const activateDeviceInstructionDiscriminator = [
  * @category ActivateDevice
  * @category generated
  */
+
 export function createActivateDeviceInstruction(
   accounts: ActivateDeviceInstructionAccounts,
   args: ActivateDeviceInstructionArgs,
   programId = new web3.PublicKey(
-    '1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg',
+    PROGRAM_ID,
   ),
 ) {
   const [data] = activateDeviceStruct.serialize({

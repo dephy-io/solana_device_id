@@ -12,6 +12,8 @@ import {
   initializeAdminArgsBeet,
 } from '../types/InitializeAdminArgs.js'
 
+import { PROGRAM_ID } from '../../constants.js'
+
 /**
  * @category Instructions
  * @category InitializeAdmin
@@ -66,11 +68,12 @@ export const initializeAdminInstructionDiscriminator = [
  * @category InitializeAdmin
  * @category generated
  */
+
 export function createInitializeAdminInstruction(
   accounts: InitializeAdminInstructionAccounts,
   args: InitializeAdminInstructionArgs,
   programId = new web3.PublicKey(
-    '1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg',
+    PROGRAM_ID ,
   ),
 ) {
   const [data] = initializeAdminStruct.serialize({

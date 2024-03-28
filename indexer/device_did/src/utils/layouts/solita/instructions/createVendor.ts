@@ -12,6 +12,8 @@ import {
   createVendorArgsBeet,
 } from '../types/CreateVendorArgs.js'
 
+import { PROGRAM_ID } from '../../constants.js'
+
 /**
  * @category Instructions
  * @category CreateVendor
@@ -70,11 +72,12 @@ export const createVendorInstructionDiscriminator = [
  * @category CreateVendor
  * @category generated
  */
+
 export function createCreateVendorInstruction(
   accounts: CreateVendorInstructionAccounts,
   args: CreateVendorInstructionArgs,
   programId = new web3.PublicKey(
-    '1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg',
+    PROGRAM_ID,
   ),
 ) {
   const [data] = createVendorStruct.serialize({

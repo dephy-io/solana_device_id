@@ -12,6 +12,8 @@ import {
   createDeviceAndDidArgsBeet,
 } from '../types/CreateDeviceAndDidArgs.js'
 
+import { PROGRAM_ID } from '../../constants.js'
+
 /**
  * @category Instructions
  * @category CreateDeviceAndDid
@@ -80,11 +82,13 @@ export const createDeviceAndDidInstructionDiscriminator = [
  * @category CreateDeviceAndDid
  * @category generated
  */
+
+
 export function createCreateDeviceAndDidInstruction(
   accounts: CreateDeviceAndDidInstructionAccounts,
   args: CreateDeviceAndDidInstructionArgs,
   programId = new web3.PublicKey(
-    '1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg',
+    PROGRAM_ID,
   ),
 ) {
   const [data] = createDeviceAndDidStruct.serialize({

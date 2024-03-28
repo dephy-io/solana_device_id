@@ -12,6 +12,8 @@ import {
   initializeGlobalArgsBeet,
 } from '../types/InitializeGlobalArgs.js'
 
+import { PROGRAM_ID } from '../../constants.js'
+
 /**
  * @category Instructions
  * @category InitializeGlobal
@@ -74,7 +76,7 @@ export function createInitializeGlobalInstruction(
   accounts: InitializeGlobalInstructionAccounts,
   args: InitializeGlobalInstructionArgs,
   programId = new web3.PublicKey(
-    '1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg',
+    PROGRAM_ID,
   ),
 ) {
   const [data] = initializeGlobalStruct.serialize({

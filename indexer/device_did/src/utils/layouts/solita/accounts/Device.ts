@@ -9,6 +9,7 @@ import * as web3 from '@solana/web3.js'
 import * as beet from '@metaplex-foundation/beet'
 import * as beetSolana from '@metaplex-foundation/beet-solana'
 import { DeviceState, deviceStateBeet } from '../types/DeviceState.js'
+import { PROGRAM_ID } from '../../constants.js'
 
 /**
  * Arguments used to create {@link Device}
@@ -83,7 +84,7 @@ export class Device implements DeviceArgs {
    */
   static gpaBuilder(
     programId: web3.PublicKey = new web3.PublicKey(
-      '1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg',
+      PROGRAM_ID,
     ),
   ) {
     return beetSolana.GpaBuilder.fromStruct(programId, deviceBeet)

@@ -12,6 +12,8 @@ import {
   createProductCollectionArgsBeet,
 } from '../types/CreateProductCollectionArgs.js'
 
+import { PROGRAM_ID } from '../../constants.js'
+
 /**
  * @category Instructions
  * @category CreateProductCollection
@@ -72,11 +74,12 @@ export const createProductCollectionInstructionDiscriminator = [
  * @category CreateProductCollection
  * @category generated
  */
+
 export function createCreateProductCollectionInstruction(
   accounts: CreateProductCollectionInstructionAccounts,
   args: CreateProductCollectionInstructionArgs,
   programId = new web3.PublicKey(
-    '1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg',
+    PROGRAM_ID,
   ),
 ) {
   const [data] = createProductCollectionStruct.serialize({
