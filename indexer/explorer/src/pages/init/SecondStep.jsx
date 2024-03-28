@@ -4,7 +4,8 @@ import { Button, Divider, Input, Alert } from "antd";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { LAMPORTS_PER_SOL, Keypair, PublicKey } from "@solana/web3.js";
-import useDeviceProgram from "../../hooks/useDeviceProgram";
+import { initProgram, useDeviceProgram } from "../../hooks/useDeviceProgram";
+
 import * as anchor from "@coral-xyz/anchor";
 
 import adminKey from "../../keypairs/admin.json";
@@ -16,7 +17,8 @@ export function loadKeypair(keyData) {
 const admin = loadKeypair(adminKey);
 
 export default function SecondStep() {
-  const program = useDeviceProgram();
+  const _program_addr = localStorage.getItem("_program_addr")
+  const program = initProgram(_program_addr);
 
   const [fee, setFee] = useState(0.0);
 

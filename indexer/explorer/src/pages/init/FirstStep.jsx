@@ -3,7 +3,7 @@ import { Button, Divider, Input , Alert} from "antd";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { LAMPORTS_PER_SOL, Keypair, PublicKey } from "@solana/web3.js";
-import useDeviceProgram from "../../hooks/useDeviceProgram";
+import { initProgram, useDeviceProgram } from "../../hooks/useDeviceProgram";
 import * as anchor from "@coral-xyz/anchor";
 
 import adminKey from "../../keypairs/admin.json";
@@ -22,7 +22,9 @@ export default function FirstStep() {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
 
-  const program = useDeviceProgram();
+  // const program = useDeviceProgram();
+  const _program_addr = localStorage.getItem("_program_addr")
+  const program = initProgram(_program_addr);
 
   // PDA for admin
   const [adminPDA] = anchor.web3.PublicKey.findProgramAddressSync(
