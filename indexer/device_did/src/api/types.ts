@@ -16,9 +16,9 @@ import { InstructionType } from '../utils/layouts/index.js'
 export const DeviceState = new GraphQLEnumType({
   name: 'DeviceState',
   values: {
-    Frozen: { value: 'Frozen' },
-    Active: { value: 'Active' },
-    Lock: { value: 'Lock' },
+    Frozen: { value: 0 },
+    Active: { value: 1 },
+    Lock: { value: 2 },
   },
 })
 export const ActivateDeviceArgs = new GraphQLObjectType({
@@ -161,7 +161,7 @@ export const Product = new GraphQLObjectType({
 export const Device = new GraphQLObjectType({
   name: 'Device',
   fields: {
-    holder: { type: new GraphQLNonNull(GraphQLString) },
+    holder: {type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLInt)))},
     deviceState: { type: new GraphQLNonNull(DeviceState) },
     deviceDidAddress: { type: new GraphQLNonNull(GraphQLString) },
   },
