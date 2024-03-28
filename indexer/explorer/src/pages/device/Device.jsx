@@ -22,6 +22,8 @@ const getDevices = async () => {
         __typename
         ... on Device {
           deviceDidAddress
+          deviceState
+          holder
         }
       }
     }
@@ -85,6 +87,12 @@ export default function Device() {
     {
       title: "deviceDidAddress",
       dataIndex: ["data", "deviceDidAddress"],
+      key: "device-deviceDidAddress",
+    },
+    {
+      title: "deviceState",
+      dataIndex: ["data", "deviceState"],
+      key: "device-deviceState",
     },
   ];
 
