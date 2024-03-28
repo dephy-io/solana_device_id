@@ -16,7 +16,7 @@ import { InstructionType } from '../utils/layouts/index.js'
 export const DeviceState = new GraphQLEnumType({
   name: 'DeviceState',
   values: {
-    Frozen: { value: 0 },
+    Inactive: { value: 0 },
     Active: { value: 1 },
     Lock: { value: 2 },
   },
