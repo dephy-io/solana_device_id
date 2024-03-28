@@ -6,7 +6,7 @@
 
 import { BN } from "bn.js";
 import toast, { Toaster } from "react-hot-toast";
-import { Button, Divider, Input, theme } from "antd";
+import { Space, Button, Divider, Input, theme } from "antd";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { LAMPORTS_PER_SOL, Keypair, PublicKey } from "@solana/web3.js";
@@ -200,6 +200,17 @@ export default function Activate() {
     console.log("Change:", val);
   };
 
+  const dummyDeviceName = () => {
+    const _deviceName = faker.company.name();
+    setDeviceName(_deviceName);
+  };
+
+  const dummySerialNum = () => {
+    const _serialNum = faker.number.int().toString();
+
+    setSerialNum(_serialNum);
+  };
+
   return (
     <div style={{ padding: "20px", textAlign: "center" }}>
       <div style={contentStyle}>
@@ -212,19 +223,41 @@ export default function Activate() {
             onChange={onProductNameHandler}
           />
 
-          <Input
-            type="text"
-            placeholder="deviceName"
-            onChange={onDeviceNameChangeHandler}
-            style={{ marginTop: "10px" }}
-          />
+          <Space.Compact
+            style={{
+              width: "100%",
+              marginTop: "10px",
+            }}
+          >
+            <Input
+              type="text"
+              value={deviceName}
+              placeholder="deviceName"
+              onChange={onDeviceNameChangeHandler}
+            />
 
-          <Input
-            type="text"
-            placeholder="serialNum"
-            onChange={onChangeHandler}
-            style={{ marginTop: "10px" }}
-          />
+            <Button type="primary" onClick={dummyDeviceName}>
+              Dummy Device Name
+            </Button>
+          </Space.Compact>
+
+          <Space.Compact
+            style={{
+              width: "100%",
+              marginTop: "10px",
+            }}
+          >
+            <Input
+              type="text"
+              value={serialNum}
+              placeholder="serialNum"
+              onChange={onChangeHandler}
+            />
+
+            <Button type="primary" onClick={dummySerialNum}>
+              Dummy Serial Num
+            </Button>
+          </Space.Compact>
 
           <Button
             type="primary"
