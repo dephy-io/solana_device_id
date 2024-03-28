@@ -139,13 +139,6 @@ export default function Activate() {
       program.programId
     );
 
-    // const deviceName = ""; //faker.company.name();
-    // console.log("deviceName: ", deviceName);
-    // faker.string.uuid()
-    // faker.number.int()
-    // const serialNum = ""; // faker.number.int().toString();
-    // console.log("serialNum: ", serialNum);
-
     const mintAt = Date.now();
 
     try {
