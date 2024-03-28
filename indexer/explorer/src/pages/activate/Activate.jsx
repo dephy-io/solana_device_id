@@ -123,7 +123,7 @@ export default function Activate() {
   // }
 
   // 注册设备
-  async function onRegistDevice() {
+  async function onRegisterDevice() {
     const device = anchor.web3.Keypair.generate();
     const deviceAddr = device.publicKey.toString();
 
@@ -168,9 +168,9 @@ export default function Activate() {
         .signers([vendorAuthority, device])
         .rpc();
 
-      toast("regist device success");
+      toast("Register device success");
     } catch (err) {
-      toast.error("regist device error");
+      toast.error("Register device error");
     }
 
     // check treasury add 0.05 sol
@@ -261,9 +261,9 @@ export default function Activate() {
           <Button
             type="primary"
             style={{ marginTop: "10px" }}
-            onClick={onRegistDevice}
+            onClick={onRegisterDevice}
           >
-            Regist Device
+            Register Device
           </Button>
         </section>
       </div>
