@@ -14,6 +14,10 @@ const items = [
     key: "init",
   },
   {
+    label: <a href="/register">Register Device</a>,
+    key: "register",
+  },
+  {
     label: <a href="/account">All Accounts</a>,
     key: "Account",
   },
@@ -28,10 +32,6 @@ const items = [
   {
     label: <a href="/event">Event</a>,
     key: "event",
-  },
-  {
-    label: <a href="/activate">Activate Device</a>,
-    key: "activate",
   },
 ];
 

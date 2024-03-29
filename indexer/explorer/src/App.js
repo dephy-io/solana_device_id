@@ -21,7 +21,8 @@ import Account from "./pages/account/Account";
 import Device from "./pages/device/Device";
 import Did from "./pages/did/Did";
 import Event from "./pages/event/Event";
-import Activate from "./pages/activate/Activate";
+import Register from "./pages/register/Register";
+import WalletActivate from "./pages/activate/Wallet";
 
 import("@solana/wallet-adapter-react-ui/styles.css");
 
@@ -51,7 +52,8 @@ function App() {
                   <Route path="/device" element={<Device />}></Route>
                   <Route path="/did" element={<Did />}></Route>
                   <Route path="/event" element={<Event />}></Route>
-                  <Route path="/activate" element={<Activate />}></Route>
+                  <Route path="/register" element={<Register />}></Route>
+                  <Route path="/wallet" element={<WalletActivate />}></Route>
                 </Routes>
               </div>
               <MainFooter />
