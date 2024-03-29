@@ -18,6 +18,10 @@ const items = [
     key: "register",
   },
   {
+    label: <a href="/activate">Activate Device</a>,
+    key: "activate",
+  },
+  {
     label: <a href="/account">All Accounts</a>,
     key: "Account",
   },
