@@ -57,6 +57,9 @@ export default function Device() {
     });
   }, []);
 
+  const toEthAddr = (val) => {
+  }
+
   const columns = [
     {
       title: "ID",
@@ -83,16 +86,17 @@ export default function Device() {
     {
       title: "Addr",
       dataIndex: "address",
+      key: "address",
     },
     {
       title: "deviceDidAddress",
       dataIndex: ["data", "deviceDidAddress"],
-      key: "device-deviceDidAddress",
+      key: "deviceDidAddress",
     },
     {
       title: "deviceState",
       dataIndex: ["data", "deviceState"],
-      key: "device-deviceState",
+      key: "deviceState",
     },
   ];
 

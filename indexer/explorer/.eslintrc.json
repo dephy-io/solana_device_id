@@ -1,0 +1,10 @@
+{
+  "env": {
+    "es2020": true,
+    "browser": true,
+    "node": true,
+    "mocha": true
+  }
+}
+
+// https://futurestud.io/tutorials/eslint-how-to-fix-bigint-is-not-defined
