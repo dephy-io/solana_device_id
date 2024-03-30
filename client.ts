@@ -5,7 +5,7 @@ import { Program, Idl } from "@coral-xyz/anchor";
 import { loadKeypair, numberToUnit8Array } from "./utils/utils";
 import * as ethUtil from "@ethereumjs/util";
 import { keccak256 } from "ethereum-cryptography/keccak.js";
-import { DeviceDid } from "./target/types/device_did";
+// import { DeviceDid } from "./target/types/device_did";
 import { faker } from "@faker-js/faker";
 import { PublicKey } from "@solana/web3.js";
 
@@ -16,13 +16,19 @@ const sleep = (delay: number) =>
 
 // export ANCHOR_WALLET=~/.config/solana/id.json
 
-const devrpc = "";
+const devrpc =
+  "https://devnet.helius-rpc.com/?api-key=f09e577b-9aa2-4c98-9dc4-f118125911a4";
+
+const devshyftrpc = "https://devnet-rpc.shyft.to?api_key=jhm3z5ibTMM0MKQS"
+
 const localrpc = "http://127.0.0.1:8899";
 
-const provider = anchor.AnchorProvider.local(localrpc);
+const provider = anchor.AnchorProvider.local(devrpc);
 anchor.setProvider(provider);
 
-const addr = "1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg";
+// const addr = "1234WPYMnkT2bx5MB3uLmixeDuaCHDpd3mXNhZGimKWg";
+const addr = "HfGKV9XahQVGGVUcL9aMaUitaC2VEjGeDcdJESnLTjE4";
+
 const programId = new PublicKey(addr);
 
 const program = new Program(idl as Idl, programId, provider);
@@ -34,7 +40,8 @@ const adminAuthority = loadKeypair("./keypairs/admin-authority.json");
 const vendorAuthority = loadKeypair("./keypairs/vendor-authority.json");
 
 const vendorName = "IO Company";
-const productName = "Computer";
+// const productName = "Computer";
+const productName = "dephy";
 
 // Assume reg fee is 0.05 SOL
 const regFee = anchor.web3.LAMPORTS_PER_SOL * 0.05;
@@ -77,7 +84,7 @@ async function airdrop(num) {
 }
 
 async function init() {
-  await airdrop(1000);
+  // await airdrop(1000);
 
   const adminPdaAddr = adminPDA.toBase58();
   console.log("adminPdaAddr: ", adminPdaAddr);
@@ -152,7 +159,8 @@ async function init() {
 }
 
 // 注册设备
-async function enrollDevice() {
+async function registerDevice() {
+  console.log(/register Device /);
   const device = anchor.web3.Keypair.generate();
   const deviceAddr = device.publicKey.toString();
 
@@ -200,11 +208,11 @@ async function enrollDevice() {
   );
   console.log(`The lamport amount of treasury is: ${treasuryInfo.lamports}`);
 
-  activate(device);
+  // activate(device.publicKey);
 }
 
 // Activate Device
-async function activate(deviceKp) {
+async function activate(devicePk: PublicKey) {
   const _priv_key = crypto.randomBytes(32);
 
   // const privateKey = ethUtil.hexToBytes("0x1111111111111111111111111111111111111111111111111111111111111111");
@@ -230,7 +238,7 @@ async function activate(deviceKp) {
       recoveryId: recoveryId,
     })
     .accounts({
-      device: deviceKp.publicKey,
+      device: devicePk,
     })
     .rpc();
 
@@ -238,17 +246,17 @@ async function activate(deviceKp) {
 }
 
 async function main() {
-  // init()
-
   let num = 0;
 
   for (;;) {
     num += 1;
     console.log(`num ${num}`);
-    enrollDevice();
-    await sleep(1000 * 5);
+    registerDevice();
+    await sleep(1000 * 10);
     console.log("-".repeat(50));
   }
 }
+
+// init();
 
 main();
