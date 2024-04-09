@@ -21,3 +21,7 @@ anchor depoly
 ```
 ts-node device-did-run.ts
 ```
+
+## PoC for the next
+
+we also made a PoC using `spl-token-2022` Token Extension in `poc-for-next` folder which will be our next iteration.
